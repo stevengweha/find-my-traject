@@ -1,21 +1,39 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+// backend/server.js
+
+const express    = require('express');
+const mongoose   = require('mongoose');
+const dotenv     = require('dotenv');
+const cors       = require('cors');         // <- déplacer ici
 const authRoutes = require('./routes/auth');
 
 dotenv.config();
 
 const app = express();
-app.use(express.json());
+
+// 1️⃣ CORS *avant* les routes
 app.use(cors());
-const cors = require('cors');
+
+// 2️⃣ JSON parsing
+app.use(express.json());
+
+// Route de test pour GET /
+app.get('/', (req, res) => {
+  res.send('🚀 API Find-My-Traject up and running!');
+});
+
+// 3️⃣ Routes auth
 app.use('/api/auth', authRoutes);
 
-mongoose.connect(process.env.MONGO_URI)
+// 4️⃣ Connexion à Mongo + démarrage du serveur
+const PORT = process.env.PORT || 5001;
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB connected');
-    app.listen(process.env.PORT, '0.0.0.0', () => {
-      console.log(`🚀 Server running on http://localhost:${process.env.PORT}`);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
   })
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+  .catch(err => {
+    console.error('❌ MongoDB connection error:', err);
+  });

@@ -14,7 +14,7 @@ RUN npm install cors
 COPY . .
 
 # Exposer le port où ton serveur backend sera en écoute (par défaut 5000 pour un serveur Express)
-EXPOSE 5000
+EXPOSE 5001
 
 # Lancer le serveur backend
 CMD ["node", "server.js"]
