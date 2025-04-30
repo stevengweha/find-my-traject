@@ -1,37 +1,36 @@
 // backend/server.js
 
-const express    = require('express');
-const mongoose   = require('mongoose');
-const dotenv     = require('dotenv');
-const cors       = require('cors');         // <- déplacer ici
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const cors = require('cors');
 const authRoutes = require('./routes/auth');
 
 dotenv.config();
 
 const app = express();
 
-// 1️⃣ CORS *avant* les routes
+// Middleware
 app.use(cors());
-
-// 2️⃣ JSON parsing
 app.use(express.json());
 
-// Route de test pour GET /
+// Test route
 app.get('/', (req, res) => {
   res.send('🚀 API Find-My-Traject up and running!');
 });
 
-// 3️⃣ Routes auth
+// Auth routes
 app.use('/api/auth', authRoutes);
 
-// 4️⃣ Connexion à Mongo + démarrage du serveur
+// Port et démarrage serveur
 const PORT = process.env.PORT || 5001;
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB connected');
     app.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
     });
   })
   .catch(err => {
