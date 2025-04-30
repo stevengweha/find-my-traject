@@ -1,0 +1,17 @@
+FROM node:20
+
+ WORKDIR /app
+
+ COPY package*.json ./
+ RUN npm install
+ RUN npm install cors
+
+
+ COPY . .
+
+ # Installer ngrok pour expo tunnel
+RUN npm install --global @expo/ngrok@^4.1.0
+
+ EXPOSE 8081
+
+ CMD ["npx", "expo", "start", "--tunnel"]
