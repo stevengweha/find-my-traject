@@ -15,7 +15,7 @@ export default function LoginScreen({ navigation }) {
     try {
       console.log("Envoi de la requête de connexion...");
 
-      const res = await fetch('http://192.168.1.115:5010/api/auth/login', {  // Vérifie que l'URL est correcte
+      const res = await fetch('http://192.168.1.115:5001/api/auth/login', {  // Vérifie que l'URL est correcte
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
