@@ -36,9 +36,9 @@ services:
     container_name: backend
     restart: always
     ports:
-      - "5001:5001"
+      - "5010:5010"
     environment:
-      - PORT=5001
+      - PORT=5010
       - MONGO_URI=mongodb://mongo:27017/findmydb
       - JWT_SECRET=supersecretkey
     depends_on:

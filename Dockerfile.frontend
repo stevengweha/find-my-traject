@@ -5,6 +5,9 @@ FROM node:20
  COPY package*.json ./
  RUN npm install
  RUN npm install cors
+RUN npm install react-native-google-places-autocomplete
+RUN npx expo install @react-native-async-storage/async-storage
+RUN npx expo install expo-speech
 
 
  COPY . .
