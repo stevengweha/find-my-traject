@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nom, setNom] = useState('');
-  const [surname, setSurname] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [postalCode, setPostalCode] = useState('');
-  const [city, setCity] = useState('');
-  const [birthdate, setBirthdate] = useState('');
+  const [prenom, setPrenom] = useState('');
+  const [telephone, setTelephone] = useState('');
+  const [adresse, setAdresse] = useState('');
+  const [codePostal, setCodePostal] = useState('');
+  const [ville, setVille] = useState('');
+  const [dateNaissance, setDateNaissance] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
+    setLoading(true);
+    setError('');
+
     try {
       const res = await fetch('http://192.168.1.115:5001/api/auth/register', {
         method: 'POST',
@@ -22,25 +27,29 @@ export default function RegisterScreen({ navigation }) {
           email,
           password,
           nom,
-          prenom: surname,
-          telephone: phone,
-          adresse: address,
-          codePostal: postalCode,
-          ville: city,
-          dateNaissance: birthdate,
+          prenom,
+          telephone,
+          adresse,
+          codePostal,
+          ville,
+          dateNaissance,
         }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        console.log('Inscription réussie !');
-        navigation.navigate('Login');
+        const token = data.token;
+        await AsyncStorage.setItem('token', token); // Sauvegarde du token
+        navigation.navigate('Home'); // Redirection après inscription
       } else {
-        setError(data.message || "Erreur d’inscription");
+        setError(data.message || 'Erreur d’inscription');
       }
     } catch (err) {
-      setError("Problème de réseau");
+      console.log("Erreur réseau:", err);
+      setError('Problème de réseau');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,18 +58,70 @@ export default function RegisterScreen({ navigation }) {
       <Text style={styles.title}>Inscription</Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
-      <TextInput style={styles.input} placeholder="Nom" value={nom} onChangeText={setNom} />
-      <TextInput style={styles.input} placeholder="Prénom" value={surname} onChangeText={setSurname} />
-      <TextInput style={styles.input} placeholder="Téléphone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
-      <TextInput style={styles.input} placeholder="Adresse" value={address} onChangeText={setAddress} />
-      <TextInput style={styles.input} placeholder="Code postal" value={postalCode} onChangeText={setPostalCode} keyboardType="numeric" />
-      <TextInput style={styles.input} placeholder="Ville" value={city} onChangeText={setCity} />
-      <TextInput style={styles.input} placeholder="Date de naissance (YYYY-MM-DD)" value={birthdate} onChangeText={setBirthdate} />
-      <TextInput style={styles.input} placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
-      <TextInput style={styles.input} placeholder="Mot de passe" value={password} onChangeText={setPassword} secureTextEntry />
+      <TextInput
+        style={styles.input}
+        placeholder="Nom"
+        value={nom}
+        onChangeText={setNom}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Prénom"
+        value={prenom}
+        onChangeText={setPrenom}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Téléphone"
+        value={telephone}
+        onChangeText={setTelephone}
+        keyboardType="phone-pad"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Adresse"
+        value={adresse}
+        onChangeText={setAdresse}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Code postal"
+        value={codePostal}
+        onChangeText={setCodePostal}
+        keyboardType="numeric"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Ville"
+        value={ville}
+        onChangeText={setVille}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Date de naissance (YYYY-MM-DD)"
+        value={dateNaissance}
+        onChangeText={setDateNaissance}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Mot de passe"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
 
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>S'inscrire</Text>
+      <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={loading}>
+        <Text style={styles.buttonText}>
+          {loading ? 'Inscription en cours...' : "S'inscrire"}
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>

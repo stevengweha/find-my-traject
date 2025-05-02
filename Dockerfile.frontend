@@ -1,20 +1,36 @@
+# Utiliser l'image officielle Node.js
 FROM node:20
 
- WORKDIR /app
+# Définir le répertoire de travail
+WORKDIR /app
 
- COPY package*.json ./
- RUN npm install
- RUN npm install cors
-RUN npm install react-native-google-places-autocomplete
-RUN npx expo install @react-native-async-storage/async-storage
-RUN npx expo install expo-speech
+# Copier les fichiers package.json et package-lock.json
+COPY package*.json ./
 
+RUN npm install -g expo-cli@latest
+RUN npm install -g @expo/ngrok@^4.1.0
 
- COPY . .
+# Installer les dépendances du projet
+# Expo install est utilisé dans le projet source (post COPY .)
+RUN npx expo upgrade --yes
 
- # Installer ngrok pour expo tunnel
-RUN npm install --global @expo/ngrok@^4.1.0
+RUN npm install
 
- EXPOSE 8081
+# Copier les fichiers du projet
+COPY . .
 
- CMD ["npx", "expo", "start", "--tunnel"]
+# Installer les modules Expo natifs (à exécuter une fois le projet copié)
+RUN npx expo install \
+    @react-native-async-storage/async-storage \
+    expo-speech \
+    expo-dev-client \
+    && npm install react-native-device-info \
+    cors \
+    react-native-google-places-autocomplete \
+    jwt-decode
+
+# Exposer les ports Expo
+EXPOSE 8081 19000 19001 19002
+
+# Lancer Expo avec tunnel
+CMD ["npx", "expo", "start", "--tunnel"]

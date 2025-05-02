@@ -8,6 +8,10 @@ services:
       dockerfile: Dockerfile.frontend
     ports:
       - "8081:8081"
+      - "19000:19000" # Port pour la communication Expo
+      - "19001:19001" # Port pour la communication Expo
+      - "19002:19002" # Port pour la communication Expo
+      
     volumes:
       - .:/app
     environment:
@@ -37,6 +41,7 @@ services:
     restart: always
     ports:
       - "5001:5001"
+      - "3000:3000" 
     environment:
       - PORT=5001
       - MONGO_URI=mongodb://mongo:27017/findmydb

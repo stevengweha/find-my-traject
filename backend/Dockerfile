@@ -15,6 +15,7 @@ COPY . .
 
 # Exposer le port où ton serveur backend sera en écoute (par défaut 5000 pour un serveur Express)
 EXPOSE 5001
+EXPOSE 3000
 
 # Lancer le serveur backend
 CMD ["node", "server.js"]
