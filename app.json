@@ -4,6 +4,8 @@
     "slug": "findmytraject",
     "version": "1.0.0",
     "orientation": "portrait",
+    "sdkVersion": "53.0.0",
+
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
